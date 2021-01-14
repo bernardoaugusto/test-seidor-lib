@@ -1,39 +1,65 @@
-export const sum = (x: number, y: number): number => {
-    return x + y;
+import {
+    buildSortParams,
+    getPaginationParams,
+    formatPaginateDataToResponse,
+} from './paginate';
+import {
+    GetAllWithoutPagination,
+    OptionsTypeOrmGetAll,
+    RequestGetAllInterface,
+} from './interfaces';
+import { dynamicFilter } from './filter';
+
+const formatParamsToTypeOrmOptionsWithoutPaginate = <T>(
+    queryParams: T & RequestGetAllInterface,
+    inactive = false,
+    tenantid?: string,
+): GetAllWithoutPagination => {
+    const { sortParam, sortOrder } = buildSortParams(queryParams);
+
+    const query = { ...queryParams };
+
+    const where = tenantid
+        ? dynamicFilter(query, inactive, tenantid)
+        : dynamicFilter(query, inactive);
+
+    const build: GetAllWithoutPagination = {
+        where,
+        order: { [sortParam]: `${sortOrder}` },
+        orderBy: {
+            columnName: sortParam,
+            order: <'DESC' | 'ASC'>`${sortOrder}`,
+        },
+    };
+
+    if (!inactive) build.where.active = true;
+    if (tenantid) build.where.tenantid = tenantid;
+
+    return build;
 };
 
+const formatParamsToTypeOrmOptionsWithPaginate = <T>(
+    queryParams: T & RequestGetAllInterface,
+    inactive = false,
+    tenantid?: string,
+): OptionsTypeOrmGetAll => {
+    const build = formatParamsToTypeOrmOptionsWithoutPaginate(
+        queryParams,
+        inactive,
+        tenantid,
+    );
 
-// Response GetALl
+    const { take, skip } = getPaginationParams(queryParams);
 
-// import { buildSortParams, getPaginationParams } from '../paginate';
-// import { OptionsTypeOrmGetAll, RequestGetAllInterface } from './interfaces';
-// import { dynamicFilter } from './dynamicFilter';
+    return {
+        ...build,
+        take,
+        skip,
+    };
+};
 
-
-// export const buildResponseGetAll = <T>(
-//     queryParams: T & RequestGetAllInterface, inactive = false,tenantid?: string,): OptionsTypeOrmGetAll => {
-//     const { take, skip } = getPaginationParams(queryParams);
-//     const { sortParam, sortOrder } = buildSortParams(queryParams);
-
-//     const query = { ...queryParams };
-
-//     const where = tenantid
-//         ? dynamicFilter(query, inactive, tenantid)
-//         : dynamicFilter(query, inactive);
-
-//     const build: OptionsTypeOrmGetAll = {
-//         where,
-//         order: { [sortParam]: `${sortOrder}` },
-//         take,
-//         skip,
-//         orderBy: {
-//             columnName: sortParam,
-//             order: <'DESC' | 'ASC'>`${sortOrder}`,
-//         },
-//     };
-
-//     if (!inactive) build.where.active = true;
-//     if (tenantid) build.where.tenantid = tenantid;
-
-//     return build;
-// };
+export {
+    formatParamsToTypeOrmOptionsWithoutPaginate,
+    formatParamsToTypeOrmOptionsWithPaginate,
+    formatPaginateDataToResponse,
+};

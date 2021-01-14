@@ -1,5 +1,3 @@
 import * as typeorm from './typeorm/lib';
 
-module.exports = {
-    typeorm,
-};
+module.exports = { typeorm };
