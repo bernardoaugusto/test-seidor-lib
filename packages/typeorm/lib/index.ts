@@ -1,18 +1,17 @@
-// // Response GetALl
+export const sum = (x: number, y: number): number => {
+    return x + y;
+};
+
+
+// Response GetALl
 
 // import { buildSortParams, getPaginationParams } from '../paginate';
 // import { OptionsTypeOrmGetAll, RequestGetAllInterface } from './interfaces';
 // import { dynamicFilter } from './dynamicFilter';
 
-// export const sum = (x: number, y: number): number => {
-//     return x + y;
-// };
 
 // export const buildResponseGetAll = <T>(
-//     queryParams: T & RequestGetAllInterface,
-//     inactive = false,
-//     tenantid?: string,
-// ): OptionsTypeOrmGetAll => {
+//     queryParams: T & RequestGetAllInterface, inactive = false,tenantid?: string,): OptionsTypeOrmGetAll => {
 //     const { take, skip } = getPaginationParams(queryParams);
 //     const { sortParam, sortOrder } = buildSortParams(queryParams);
 
