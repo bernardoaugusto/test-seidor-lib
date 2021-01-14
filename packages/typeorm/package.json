@@ -12,5 +12,9 @@
     "filter"
   ],
   "author": "Bernardo Augusto Bastos Silva",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "moment": "^2.29.1",
+    "typeorm": "^0.2.28"
+  }
 }
